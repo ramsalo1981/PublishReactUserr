@@ -5,7 +5,7 @@
 //  get one category by id : https://localhost:44375/api/Categories/1
 //  get one category by id include articles: https://localhost:44375/api/Categories/GetCategoryDetails/3
 
-// Post 
+// Post test here
 // Create category : https://localhost:44375/api/Categories
 
 //put
