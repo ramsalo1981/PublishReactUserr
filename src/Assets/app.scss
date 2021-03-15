@@ -232,6 +232,12 @@ a, a:focus {
         width: 100%;
     }
 }
+@media (min-width: 1200px){
+    .col-lg-6 {
+        width: 50%;
+    }
+}
+
 .sticky-icon {
     background-color: #FFF;
     text-align: center;
@@ -371,4 +377,77 @@ a, a:link, a:visited {
 .recent-posts-widget .post-title a, .popular-posts-widget .post-title a, .small-slider .entry-title a {
     color: #FFF !important;
     text-transform: capitalize;
+}
+.widget.ct_catsubcat_widget {
+    padding: 0;
+    margin-bottom: 0;
+    background: none;
+}
+.entry-cat-block {
+    background-color: #42586a;
+    padding: 15px 20px 20px 20px;
+    position: relative;
+    margin-bottom: 30px;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+    -transition: all 0.3s linear;
+}
+.entry-cat-block > .count-items {
+    background-color: #FFF;
+    text-align: center;
+    display: block;
+    width: 60px;
+    height: 60px;
+    color: #8c8c8c;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    padding-top: 12px;
+    margin-bottom: 15px;
+}
+.entry-cat-block > .count-items > .count {
+    font-weight: bold;
+    font-size: 26px;
+    line-height: 12px;
+}
+.entry-cat-block > .count-items > .items {
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 12px;
+}
+.entry-cat-block h3, .entry-cat-block h3 a {
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+.entry-cat-block > h3, .entry-cat-block > .entry-cat-desc {
+    margin-left: 75px;
+}
+.entry-cat-block > h3 {
+    margin-bottom: 0;
+}
+.entry-cat-block h3 {
+    line-height: 24px !important;
+}
+.entry-cat-block > .entry-cat-desc {
+    font-size: 12px;
+    font-style: italic;
+    opacity: .5;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    filter: alpha(opacity=50);
+}
+.entry-cat-block .sub-categories, .entry-cat-block .category-posts {
+    margin-left: 0;
+    padding-top: 20px;
+}
+.ct_catsubcat_widget ul {
+    list-style-type: none;
+    margin: 0;
+}
+.entry-cat-block .category-posts li {
+    margin-bottom: 10px;
+}
+.category-posts li a i {
+    padding-right: 5px;
 }
