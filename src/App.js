@@ -1,297 +1,445 @@
 import './Assets/main.scss';
 import './Assets/boot.css';
+import { Component } from 'react';
+var randomColor = require('randomcolor'); 
 
-function App() {
-  return (
-    <div className="App">
-      <header id="header">
-        <div className="container">
-          <div className="row top-block">
-            <div className="col-lg-5 logo-block">
-              <div id="logo">
-                <h1>
-                  <p className="logo_text">Blogg Website</p>
-                </h1>
+
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      Last_articles: [],
+      Articles: [],
+      Categories: [],
+      Last_categories: [],
+      Opened_articles: [],
+      Article_paragraph: [],
+      article_title:"",
+      homeOrCategoey: 1,
+      homeActiveLink:"active_home",
+      categoryActiveLink: ""
+    };
+    this.showHome = this.showHome.bind(this);
+    this.hideHome = this.hideHome.bind(this);
+  }
+
+  componentDidMount() {
+    fetch('/api/Articles/GetLastArticles')
+      .then(res => res.json())
+      .then(Last_articles => this.setState({Last_articles}));
+    fetch('/api/Articles/')
+      .then(res => res.json())
+      .then(Articles => this.setState({Articles}));
+    fetch('/api/Categories/GetLastCategories')
+      .then(res => res.json())
+      .then(Last_categories => this.setState({Last_categories}));
+    fetch('/api/Categories')
+      .then(res => res.json())
+      .then(Categories => this.setState({Categories}));
+  }
+  showHome(e) {
+    e.preventDefault();
+    this.setState({homeOrCategoey: 1});
+    this.setState({homeActiveLink: "active_home"});
+    this.setState({categoryActiveLink: ""});
+  }
+  hideHome(e) {
+    e.preventDefault();
+    this.setState({homeOrCategoey: 2});
+    this.setState({homeActiveLink: ""});
+    this.setState({categoryActiveLink: "active_category"});
+  }
+  showSelectedArticles(artic) {
+    this.setState({Opened_articles:artic});
+    this.setState({homeOrCategoey: 3});
+  }
+
+  showSelectedArticleParagraph(articleParagraph, articleTitle){
+    this.setState({Article_paragraph:articleParagraph});
+    this.setState({homeOrCategoey: 4});
+    this.setState({article_title: articleTitle});
+    console.log(articleParagraph);
+  }
+
+  render() {
+    var firstCategor = 0;
+    var firstCategor_articles = [];
+    var secondCategor = 0;
+    var secondCategor_articles = [];
+    var thirdCategor = 0;
+    var thirdCategor_articles = [];
+    var fourthCategor = 0;
+    var fourthCategor_articles = [];
+    for(var i=0; i < this.state.Last_categories.length; i++){
+      if(i === 0) {
+        firstCategor = this.state.Last_categories[i];
+        firstCategor_articles = this.state.Last_categories[i].articles;
+      }
+      if(i === 1){
+        secondCategor = this.state.Last_categories[i];
+        secondCategor_articles = this.state.Last_categories[i].articles;
+      } 
+      if(i === 2){
+        thirdCategor = this.state.Last_categories[i];
+        thirdCategor_articles = this.state.Last_categories[i].articles;
+      } 
+      if(i === 3){
+        fourthCategor = this.state.Last_categories[i];
+        fourthCategor_articles = this.state.Last_categories[i].articles;
+      } 
+  }
+
+    return (
+      <div className="App">
+        <header id="header">
+          <div className="container">
+            <div className="row top-block">
+              <div className="col-lg-5 logo-block">
+                <div id="logo">
+                  <h1>
+                    <p className="logo_text">Blogg Website</p>
+                  </h1>
+                </div>
               </div>
-            </div>
-            <div className="col-lg-7 right-block" style={{paddingTop : "25px"}}>
-              <div id="live-search">
-                <form role="search" method="get" id="searchform" className="clearfix">
-							    <input type="text" name="s" id="s" autoComplete="off" />
-								  <button type="submit" className="submit btn fa fa-search" name="submit" id="searchsubmit"></button>
-							    <i className="live-search-loading icon-spinner icon-spin"></i>
-							  </form>
+              <div className="col-lg-7 right-block" style={{paddingTop : "25px"}}>
+                <div id="live-search">
+                  <form role="search" method="get" id="searchform" className="clearfix">
+                    <input type="text" name="s" id="s" autoComplete="off" />
+                    <button type="submit" className="submit btn fa fa-search" name="submit" id="searchsubmit"></button>
+                    <i className="live-search-loading icon-spinner icon-spin"></i>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div id="mainmenu-block-bg" className="second_nav">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-12">
-                <div className="navigation" role="navigation">
-                  <div id="menu">
-                    <div className="menu-main-menu-container">
-                      <ul id="menu-main-menu" className="sf-menu sf-js-enabled" style={{display: "block"}}>
-                        <li id="menu-item-7" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7">
-                          <a href="true" className="sf-with-ul">HOME</a>
-                        </li>
-                        <li id="menu-item-127" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-127">
-                          <a href="true">CATEGORIES</a></li>
-                      </ul>
+          <div id="mainmenu-block-bg" className="second_nav">
+            <div className="container">
+              <div className="row">
+                <div className="col-lg-12">
+                  <div className="navigation" role="navigation">
+                    <div id="menu">
+                      <div className="menu-main-menu-container">
+                        <ul id="menu-main-menu" className="sf-menu sf-js-enabled" style={{display: "block"}}>
+                          <li id="menu-item-7" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-7">
+                            <div onClick={ this.showHome } className={this.state.homeActiveLink}>HOME</div>
+                          </li>
+                          <li id="menu-item-127" className="menu-item menu-item-type-custom menu-item-object-custom menu-item-127">
+                            <div onClick={ this.hideHome } className={this.state.categoryActiveLink}>CATEGORIES</div></li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </header>
-      <div id="content" className="container" role="main" style = {{height: "auto!important"}}>
-        <div className="row" style={{height: "auto!important"}}>
-          <div id="primary" className="col-lg-8" style={{height: "auto!important", minHeight: "0px!important"}}>
-            <aside id="ct_sticky_widget-2" className="widget ct_sticky_widget clearfix">
-              <div className="sticky-block" style={{backgroundColor: "#6a4248"}}>
+        </header>
+        <div id="content" className="container" role="main" style = {{height: "auto!important"}}>
+          <div className="row" style={{height: "auto!important"}}>
+          {this.state.homeOrCategoey === 1 &&
+            <div id="primary" className="col-lg-8" style={{height: "auto!important", minHeight: "0px!important"}}>
+              <aside id="ct_sticky_widget-2" className="widget ct_sticky_widget clearfix">
+                <div className="sticky-block" style={{backgroundColor: "#6a4248"}}>
+                  <div className="row">
+                    <div className="col-lg-6">
+                      <div className="sticky-icon">
+                        <i className="fa fa-star">
+
+                        </i>
+                      </div>
+                      
+                      {this.state.Articles.map(article =>{
+                        return article.stickyArticle ?
+                        <img src={article.articleImageSrc} alt="Sticky Article" key={article.articleId} />
+                        :
+                        (null)
+                      }
+                      )}
+                      
+                    </div>
+                    <div className="col-lg-6">
+                      <div className="right-side clearfix">
+                        <h2>
+                          <div href="true" title="Permalink to Sticky Article">
+                            Sticky Article 
+                          </div>
+                        </h2>
+                        <div className="clear"></div>
+                        <div className="margin-10b"></div>
+                        {this.state.Articles.map(article =>{
+                        return article.stickyArticle ?
+                        <div>
+                          <div className="post-content" key={article.articleId}>
+                            {article.articleTitle}
+                          </div>
+                          <div className="clear"></div>
+                          <div style={{cursor:"pointer"}} className="btn-more-circle" title="Sticky Article" onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )}>
+                            <i className="fa fa-chevron-right"></i>
+                          </div>
+                        </div>
+                        :
+                        (null)
+                      }
+                      )}
+                        
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+              <aside id="ct_catsubcat_widget-2" className="widget ct_catsubcat_widget clearfix">
                 <div className="row">
                   <div className="col-lg-6">
-                    <div className="sticky-icon">
-                      <i className="fa fa-star">
-
-                      </i>
+                    <div className="entry-cat-block" style={{backgroundColor:"#c27d23"}}>
+                      <div className="count-items">
+                        <span className="count">{firstCategor_articles.length}</span>
+                        <div className="clear"></div>
+                        <span className="items">items</span>
+                      </div>
+                      <h3>
+                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,firstCategor.articles )} title={firstCategor.categoryTitle}>{firstCategor.categoryTitle}</div>
+                      </h3>
+                      
+                        {firstCategor_articles.length > 0 &&
+                        <ul className="category-posts">
+                          {firstCategor_articles.map(article => 
+                            <li>
+                              <div style={{cursor:"pointer"}} onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )} key={article.articleId} title={article.articleTitle}><i className="fa fa-pencil"></i>{article.articleTitle}</div>
+                            </li>
+                          )}
+                          
+                          
+                        </ul>
+                        }
+                      
                     </div>
-                    <img src="http://wp.color-theme.com/techdesk/wp-content/uploads/2013/09/photodune-2243193-tourist-s-770x428.jpg" alt="Sticky Article" />
                   </div>
                   <div className="col-lg-6">
-                    <div className="right-side clearfix">
-                      <h2>
-                        <a href="true" title="Permalink to Sticky Article">
-                          Sticky Article 
-                          <i className="fa fa-long-arrow-right" style={{marginLeft:"10px"}}></i>
-                        </a>
-                      </h2>
-                      <div className="clear"></div>
-                      <div className="margin-10b"></div>
-                      <div className="post-content">
-                        By default, WordPress.com blogs display posts in reverse chronological order on the home page with the latest post at the top.								
+                    <div className="entry-cat-block" style={{backgroundColor:"#4e8031"}}>
+                      <div className="count-items">
+                        <span className="count">{secondCategor_articles.length}</span>
+                        <div className="clear"></div>
+                        <span className="items">items</span>
                       </div>
-                      <div className="clear"></div>
-                      <a href="true" className="btn-more-circle" title="Sticky Article">
-                        <i className="fa fa-chevron-right"></i>
-                      </a>
+
+                      <h3>
+                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,secondCategor.articles )} title={secondCategor.categoryTitle}>{secondCategor.categoryTitle}</div>
+                      </h3>
+
+                      {secondCategor_articles.length > 0 &&
+                        <ul className="category-posts">
+                          {secondCategor_articles.map(article => 
+                            <li>
+                              <div style={{cursor:"pointer"}} onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )} key={article.articleId} title={article.articleTitle}><i className="fa fa-pencil"></i>{article.articleTitle}</div>
+                            </li>
+                          )}
+                          
+                          
+                        </ul>
+                      }
                     </div>
                   </div>
                 </div>
+                <div className="row">
+                  <div className="col-lg-6">
+                    <div className="entry-cat-block" style={{backgroundColoro: "#2daacd"}}>
+                      <div className="count-items">
+                        <span className="count">{thirdCategor_articles.length}</span>
+                        <div className="clear"></div>
+                        <span className="items">items</span>
+                      </div>
+              
+                      <h3>
+                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,thirdCategor.articles )} title={thirdCategor.categoryTitle}>{thirdCategor.categoryTitle} 
+                        </div>
+                      </h3>
+        
+                      {thirdCategor_articles.length > 0 &&
+                        <ul className="category-posts">
+                          {thirdCategor_articles.map(article => 
+                            <li>
+                              <div style={{cursor:"pointer"}} onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )} key={article.articleId} title={article.articleTitle}><i className="fa fa-pencil"></i>{article.articleTitle}</div>
+                            </li>
+                          )}
+                          
+                          
+                        </ul>
+                      }
+                    </div>
+                  </div>
+                  <div className="col-lg-6">
+                    <div className="entry-cat-block" style={{backgroundColor:"#40342b"}}>
+                      <div className="count-items">
+                        <span className="count">{fourthCategor_articles.length}</span>
+                        <div className="clear"></div>
+                        <span className="items">items</span>
+                      </div>
+
+                      <h3>
+                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,fourthCategor.articles )} title={fourthCategor.categoryTitle}>{fourthCategor.categoryTitle} 
+                        </div>
+                      </h3>
+
+                      {fourthCategor_articles.length > 0 &&
+                        <ul className="category-posts">
+                          {fourthCategor_articles.map(article => 
+                            <li>
+                              <div style={{cursor:"pointer"}} onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )} key={article.articleId} title={article.articleTitle}><i className="fa fa-pencil"></i>{article.articleTitle}</div>
+                            </li>
+                          )}
+                          
+                          
+                        </ul>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+            }
+            {this.state.homeOrCategoey === 2 &&
+              <div id="primary" className="col-lg-8">
+                <aside id="ct_sticky_widget-2" className="widget ct_sticky_widget clearfix">
+                {this.state.Categories.map(category =>
+                   <div className="sticky-block" style={{backgroundColor: randomColor()}} onClick={this.showSelectedArticles.bind(this,category.articles )}>
+                   <div className="row">
+                     <div className="col-lg-6 number_article">
+                      <div className="count-items">
+                        <span className="count">{category.articles.length}</span>
+                        <div className="clear"></div>
+                        <span className="items">Articles</span>
+                      </div>
+                      <img src={category.categoryImageSrc} alt="Sticky Article" key={category.categoryId} />   
+                     </div>
+                     <div className="col-lg-6">
+                       <div className="right-side clearfix">
+                         <h2>
+                           <div title="Permalink to Sticky Article">
+                            {category.categoryTitle} 
+                           </div>
+                         </h2>
+                         <div className="meta clearfix">{category.categoryPublishDate}</div>
+                         <div className="clear"></div>
+                         <div className="margin-10b"></div>
+                         <ul className="category-posts">
+                          {category.articles.map(article => 
+                            <li>
+                              <div key={article.articleId} title={article.articleTitle}><i className="fa fa-pencil"></i>{article.articleTitle}</div>
+                            </li>
+                          )}
+                          
+                          
+                        </ul>
+                         
+                         <div className="clear"></div>
+                         <div className="btn-more-circle" title="Sticky Article">
+                           <i className="fa fa-chevron-right"></i>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+                  
+                )}
+                </aside>
               </div>
-            </aside>
-            <aside id="ct_catsubcat_widget-2" className="widget ct_catsubcat_widget clearfix">
-              <div className="row">
-                <div className="col-lg-6">
-                  <div className="entry-cat-block" style={{backgroundColor:"#c27d23"}}>
-                    <div className="count-items">
-                      <span className="count">6</span>
-                      <div className="clear"></div>
-                      <span className="items">items</span>
-                    </div>
-                    <h3>
-                      <a href="true" title="View all posts in Wordpress">Wordpress <i className="fa fa-long-arrow-right"></i></a>
-                    </h3>
-                    <div className="entry-cat-desc">
-                      WordPress is web software you can use to create a beautiful website ...
-                    </div>
-                    <ul className="category-posts">
-                      <li>
-                        <a href="true" title="Permalink to Giving WordPress Its Own Directory"><i className="fa fa-picture"></i>Giving WordPress Its Own Directory</a>
-                      </li>
-                      <li>
-                        <a href="true" title="Permalink to Can I rename the WordPress folder?"><i className="fa fa-pencil"></i>Can I rename the WordPress folder?</a>
-                      </li>
-                      <li>
-                        <a href="true" title="Permalink to How I Can Upgrade WordPress?"><i className="fa fa-picture"></i>How I Can Upgrade WordPress?</a>
-                      </li>
-                      <li>
-                        <a href="true" title="Permalink to How WordPress Processes Post Content"><i className="fa fa-pencil"></i>How WordPress Processes Post Content</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="col-lg-6">
-                  <div className="entry-cat-block" style={{backgroundColor:"#4e8031"}}>
-		    					  <div className="count-items">
-			    			      <span className="count">5</span>
-			    			      <div className="clear"></div>
-			    			      <span className="items">items</span>
-			    		      </div>
-
-			    	        <h3>
-                      <a href="true" title="View all posts in envato">envato <i className="fa fa-long-arrow-right"></i></a>
-                    </h3>
-
-			    				  <div className="entry-cat-desc ">Envato Support Category. Answer on Your Questions.</div>
-			              <ul className="category-posts">
-                      <li>
-                        <a href="true">
-                          <i className="fa fa-picture"></i>VirtueMart Template Submission Requirements</a>
-                      </li>
-
-			    			      <li>
-                        <a href="true" title="Permalink to PSD Templates Submission Requirements">
-                          <i className="fa fa-picture"></i>PSD Templates Submission Requirements</a>
-                      </li>
-
-                      <li>
-                        <a href="true" title="Permalink to Facebook Templates Submission Requirements">
-                          <i className="fa fa-picture"></i>Facebook Templates Submission Requirements</a>
-                      </li>
-
-			    			      <li>
-                        <a href="true" title="Permalink to General File Preparation Guidelines">
-                          <i className="fa fa-camera"></i>General File Preparation Guidelines</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+            }
+            {this.state.homeOrCategoey === 3 &&
+              <div id="primary" className="col-lg-8">
+                <aside id="ct_sticky_widget-2" className="widget ct_sticky_widget clearfix">
+                {this.state.Opened_articles.map(article =>
+                   <div className="sticky-block" key={article.articleId} style={{backgroundColor: randomColor()}} onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )}>
+                   <div className="row">
+                     <div className="col-lg-6 number_article">
+                      <img src={article.articleImageSrc} alt="Sticky Article" key={article.articleId} />   
+                     </div>
+                     <div className="col-lg-6">
+                       <div className="right-side clearfix">
+                         <h2>
+                           <div title="Permalink to Sticky Article">
+                            {article.articleTitle} 
+                           </div>
+                         </h2>
+                         <div className="meta clearfix">{article.articlePublishDate}</div>
+                         <div className="clear"></div>
+                         <div className="margin-10b"></div>
+                         
+                         <div className="clear"></div>
+                         <div className="btn-more-circle" title="Sticky Article">
+                           <i className="fa fa-chevron-right"></i>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+                  
+                )}
+                </aside>
               </div>
-              <div className="row">
-	    	        <div className="col-lg-6">
-		    	        <div className="entry-cat-block" style={{backgroundColoro: "#2daacd"}}>
-		    					  <div className="count-items">
-			    			      <span className="count">4</span>
-			    			      <div className="clear"></div>
-			    			      <span className="items">items</span>
-			    		      </div>
-		    		
-			    	        <h3>
-                      <a href="http://wp.color-theme.com/techdesk/category/microlancer" title="View all posts in microlancer">microlancer 
-                        <i className="fa fa-long-arrow-right"></i>
-                      </a>
-                    </h3>
-
-			    				  <div className="entry-cat-desc ">
-                      Microlancer is a platform which allows freelancers to create a virt ...
+            }
+            {this.state.homeOrCategoey === 4 &&
+              <div id="primary" className="col-lg-8">
+                <header className="entry-header clearfix" style={{backgroundColor:"#eee", marginBottom: "30px"}}>
+                  <h1 className="entry-single-title">{this.state.article_title}</h1>                              
+                </header>
+                {this.state.Article_paragraph.map(articleParagraph =>
+                   <div className="Topic_topicListPen-3t_kg" key={articleParagraph.articleParagraphId}>
+                      <div className="thumbnail-wrap">
+                        <img className="grid-preview-image" loading="lazy" alt="" src={articleParagraph.articleParagraphImageSrc} />
+                      </div>
+                      <div className="Topic_about-2dnxY">
+                        <h2>{articleParagraph.articleParagraphTitle}</h2>
+                        <div className="Topic_description-3tPZs">
+                          <p>{articleParagraph.content}</p>
+                        </div>
+                      </div>
                     </div>
-			
-                    <ul className="category-posts">
-                      <li>
-                        <a href="http://wp.color-theme.com/techdesk/terms-of-using-microlancer" title="Permalink to Terms of using Microlancer">
-                          <i className="fa fa-film"></i>Terms of using Microlancer</a>
-                      </li>
-
-			    			      <li>
-                        <a href="http://wp.color-theme.com/techdesk/can-buyers-of-services-resell-the-work" title="Permalink to Can buyers of services resell the work">
-                          <i className="fa fa-music"></i>Can buyers of services resell the work</a>
-                      </li>
-
-			    			      <li>
-                        <a href="http://wp.color-theme.com/techdesk/how-does-buying-a-service-work" title="Permalink to How does buying a service work?">
-                          <i className="fa fa-picture"></i>How does buying a service work?</a>
-                      </li>
-
-			    			      <li>
-                        <a href="http://wp.color-theme.com/techdesk/what-is-microlancer" title="Permalink to What is Microlancer?">
-                          <i className="fa fa-pencil"></i>What is Microlancer?</a>
-                      </li>
-
-			              </ul>
-                  </div>
-                </div>
-	    	        <div className="col-lg-6">
-		    	        <div className="entry-cat-block" style={{backgroundColor:"#40342b"}}>
-		    					  <div className="count-items">
-                      <span className="count">7</span>
-                      <div className="clear"></div>
-                      <span className="items">items</span>
-			    		      </div>
-
-			    	        <h3>
-                      <a href="http://wp.color-theme.com/techdesk/category/github" title="View all posts in github">github 
-                        <i className="fa fa-long-arrow-right"></i>
-                      </a>
-                    </h3>
-
-			    				  <div className="entry-cat-desc ">
-                      Powerful features to make software development more collaborative. ...
-                    </div>
-
-			              <ul className="category-posts">
-                      <li>
-                        <a href="http://wp.color-theme.com/techdesk/what-happens-when-i-change-my-username" title="Permalink to What happens when I change my username?">
-                          <i className="fa fa-picture"></i>What happens when I change my username?</a>
-                      </li>
-
-			    			      <li>
-                        <a href="http://wp.color-theme.com/techdesk/what-plan-should-i-choose" title="Permalink to What plan should I choose?">
-                          <i className="fa fa-picture"></i>What plan should I choose?</a>
-                      </li>
-
-			    			      <li>
-                        <a href="http://wp.color-theme.com/techdesk/how-do-i-cancel-my-account" title="Permalink to How do I cancel my account?">
-                          <i className="fa fa-music"></i>How do I cancel my account?</a>
-                      </li>
-
-			    			      <li>
-                        <a href="http://wp.color-theme.com/techdesk/what-is-my-disk-quota" title="Permalink to What is my disk quota?">
-                          <i className="fa fa-pencil"></i>What is my disk quota?</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+                )}
               </div>
-            </aside>
+            }
+            <div id="secondary" className="sidebar col-lg-4" role="complementary">
+              <aside id="ct-populararticles-widget-4" className="widget ct-populararticles-widget clearfix">
+                <div className="popular-block" style={{backgroundColor: "#378463"}}>
+                  <i className="fa fa-star"></i>
+                  <h4 className="widget-title">popular Articles</h4>
+                  <ul className="popular-posts-widget popular-widget-658000136">
+                  <li className="clearfix">
+                      <div className="post-title">
+                        <i className="fa fa-pencil"></i>
+                      </div>
+                  </li>
+                  {this.state.Last_articles.map(article => 
+                    <li style={{cursor:"pointer"}} key={article.articleId} className="clearfix" onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )}>
+                      <div className="post-title">
+                        <h5>
+                          <div title={article.articleTitle}>
+                            {article.articleTitle}
+                          </div>
+                        </h5>
+                      </div>
+                    </li>
+                  )}
+                    
+
+                  </ul>
+                </div>
+              </aside>
+            </div>
           </div>
-          <div id="secondary" className="sidebar col-lg-4" role="complementary">
-            <aside id="ct-populararticles-widget-4" className="widget ct-populararticles-widget clearfix">
-              <div className="popular-block" style={{backgroundColor: "#378463"}}>
-                <i className="fa fa-star"></i>
-                <h4 className="widget-title">popular Articles</h4>
-                <ul className="popular-posts-widget popular-widget-658000136">
-                  <li className="clearfix">
-                    <div className="post-title">
-                      <i className="fa fa-pencil"></i>
-                      <h5>
-                        <a href="true" title="Permalink to Can I rename the WordPress folder?">
-                          Can I rename the WordPress folder?
-                        </a>
-                      </h5>
-                    </div>
-                  </li>
-                  <li className="clearfix">
-                  <div className="post-title">
-                      <i className="fa fa-pecture"></i>
-                      <h5>
-                        <a href="true" title="Permalink to Sticky Article">
-                          Sticky Article
-                        </a>
-                      </h5>
-                    </div>
-                  </li>
-                  <li className="clearfix">
-                  <div className="post-title">
-                      <i className="fa fa-pecture"></i>
-                      <h5>
-                        <a href="true" title="Giving WordPress Its Own Directory">
-                          Giving WordPress Its Own Directory
-                        </a>
-                      </h5>
-                    </div>
-                  </li>
-                  <li className="clearfix">
-                    <div className="post-title">
-                      <i className="fa fa-pecture"></i>
-                      <h5>
-                        <a href="true" title="My contributions not showing up on my profile">
-                          My contributions not showing up on my profile
-                        </a>
-                      </h5>
-                    </div>
-                  </li>
-                </ul>
+        </div>
+        <div id="footer" role="contentinfo">
+          <div className="container clearfix">
+              <div className="row">				
+                <div className="col-lg-12">			
+                     <div>NewTechIT</div>
+                </div>
               </div>
-            </aside>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default App;
