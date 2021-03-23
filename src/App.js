@@ -97,7 +97,7 @@ class App extends Component {
               <div className="col-lg-5 logo-block">
                 <div id="logo">
                   <h1>
-                    <p className="logo_text">Blogg Website</p>
+                    <p className="logo_text">Zington IT</p>
                   </h1>
                 </div>
               </div>
@@ -402,7 +402,7 @@ class App extends Component {
               <aside id="ct-populararticles-widget-4" className="widget ct-populararticles-widget clearfix">
                 <div className="popular-block" style={{backgroundColor: "#378463"}}>
                   <i className="fa fa-star"></i>
-                  <h4 className="widget-title">popular Articles</h4>
+                  <h4 className="widget-title">Last Articles</h4>
                   <ul className="popular-posts-widget popular-widget-658000136">
                   <li className="clearfix">
                       <div className="post-title">
