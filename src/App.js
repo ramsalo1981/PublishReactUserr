@@ -15,12 +15,16 @@ class App extends Component {
       Opened_articles: [],
       Article_paragraph: [],
       article_title:"",
+      category_title:"",
       homeOrCategoey: 1,
       homeActiveLink:"active_home",
-      categoryActiveLink: ""
+      categoryActiveLink: "",
+      search_word: ""
     };
     this.showHome = this.showHome.bind(this);
     this.hideHome = this.hideHome.bind(this);
+    this.searchWord = this.searchWord.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidMount() {
@@ -49,8 +53,22 @@ class App extends Component {
     this.setState({homeActiveLink: ""});
     this.setState({categoryActiveLink: "active_category"});
   }
-  showSelectedArticles(artic) {
+  searchWord(e) {
+    e.preventDefault();
+    fetch('/api/Articles/SearchCategoryArticle/' + this.state.search_word)
+      .then(res => res.json())
+      .then(Opened_articles => this.setState({Opened_articles}));
+    
+    this.setState({homeOrCategoey: 5});
+    this.setState({search_word: ""});
+  }
+  handleSearch(e) {
+    e.preventDefault();
+    this.setState({search_word: e.target.value});
+  }
+  showSelectedArticles(artic, categoTitle) {
     this.setState({Opened_articles:artic});
+    this.setState({category_title: categoTitle});
     this.setState({homeOrCategoey: 3});
   }
 
@@ -58,7 +76,6 @@ class App extends Component {
     this.setState({Article_paragraph:articleParagraph});
     this.setState({homeOrCategoey: 4});
     this.setState({article_title: articleTitle});
-    console.log(articleParagraph);
   }
 
   render() {
@@ -97,15 +114,15 @@ class App extends Component {
               <div className="col-lg-5 logo-block">
                 <div id="logo">
                   <h1>
-                    <p className="logo_text">Zington IT</p>
+                    <p className="logo_text">NewTechIT</p>
                   </h1>
                 </div>
               </div>
               <div className="col-lg-7 right-block" style={{paddingTop : "25px"}}>
                 <div id="live-search">
                   <form role="search" method="get" id="searchform" className="clearfix">
-                    <input type="text" name="s" id="s" autoComplete="off" />
-                    <button type="submit" className="submit btn fa fa-search" name="submit" id="searchsubmit"></button>
+                    <input type="text" name="s" id="s" autoComplete="off" onChange={this.handleSearch} value={this.state.search_word}/>
+                    <button onClick={this.searchWord} type="submit" className="submit btn fa fa-search" name="submit" id="searchsubmit"></button>
                     <i className="live-search-loading icon-spinner icon-spin"></i>
                   </form>
                 </div>
@@ -195,10 +212,10 @@ class App extends Component {
                       <div className="count-items">
                         <span className="count">{firstCategor_articles.length}</span>
                         <div className="clear"></div>
-                        <span className="items">items</span>
+                        <span className="items">Articles</span>
                       </div>
                       <h3>
-                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,firstCategor.articles )} title={firstCategor.categoryTitle}>{firstCategor.categoryTitle}</div>
+                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,firstCategor.articles, firstCategor.categoryTitle )} title={firstCategor.categoryTitle}>{firstCategor.categoryTitle}</div>
                       </h3>
                       
                         {firstCategor_articles.length > 0 &&
@@ -220,11 +237,11 @@ class App extends Component {
                       <div className="count-items">
                         <span className="count">{secondCategor_articles.length}</span>
                         <div className="clear"></div>
-                        <span className="items">items</span>
+                        <span className="items">Articles</span>
                       </div>
 
                       <h3>
-                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,secondCategor.articles )} title={secondCategor.categoryTitle}>{secondCategor.categoryTitle}</div>
+                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,secondCategor.articles, secondCategor.categoryTitle )} title={secondCategor.categoryTitle}>{secondCategor.categoryTitle}</div>
                       </h3>
 
                       {secondCategor_articles.length > 0 &&
@@ -247,11 +264,11 @@ class App extends Component {
                       <div className="count-items">
                         <span className="count">{thirdCategor_articles.length}</span>
                         <div className="clear"></div>
-                        <span className="items">items</span>
+                        <span className="items">Articles</span>
                       </div>
               
                       <h3>
-                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,thirdCategor.articles )} title={thirdCategor.categoryTitle}>{thirdCategor.categoryTitle} 
+                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,thirdCategor.articles, thirdCategor.categoryTitle )} title={thirdCategor.categoryTitle}>{thirdCategor.categoryTitle} 
                         </div>
                       </h3>
         
@@ -273,11 +290,11 @@ class App extends Component {
                       <div className="count-items">
                         <span className="count">{fourthCategor_articles.length}</span>
                         <div className="clear"></div>
-                        <span className="items">items</span>
+                        <span className="items">Articles</span>
                       </div>
 
                       <h3>
-                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,fourthCategor.articles )} title={fourthCategor.categoryTitle}>{fourthCategor.categoryTitle} 
+                        <div style={{cursor:"pointer"}} onClick={this.showSelectedArticles.bind(this,fourthCategor.articles,  fourthCategor.categoryTitle)} title={fourthCategor.categoryTitle}>{fourthCategor.categoryTitle} 
                         </div>
                       </h3>
 
@@ -299,11 +316,11 @@ class App extends Component {
             </div>
             }
             {this.state.homeOrCategoey === 2 &&
-              <div id="primary" className="col-lg-8">
+              <div id="primary" className="col-lg-8" style={{height: "900px", overflow: "scroll"}}>
                 <aside id="ct_sticky_widget-2" className="widget ct_sticky_widget clearfix">
                 {this.state.Categories.map(category =>
-                   <div className="sticky-block" style={{backgroundColor: randomColor()}} onClick={this.showSelectedArticles.bind(this,category.articles )}>
-                   <div className="row">
+                   <div className="sticky-block" style={{backgroundColor: randomColor(), cursor:'pointer'}} onClick={this.showSelectedArticles.bind(this,category.articles, category.categoryTitle )}>
+                   <div className="row" >
                      <div className="col-lg-6 number_article">
                       <div className="count-items">
                         <span className="count">{category.articles.length}</span>
@@ -349,7 +366,7 @@ class App extends Component {
               <div id="primary" className="col-lg-8">
                 <aside id="ct_sticky_widget-2" className="widget ct_sticky_widget clearfix">
                 {this.state.Opened_articles.map(article =>
-                   <div className="sticky-block" key={article.articleId} style={{backgroundColor: randomColor()}} onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )}>
+                   <div className="sticky-block" key={article.articleId} style={{backgroundColor: randomColor(), cursor:'pointer'}} onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )}>
                    <div className="row">
                      <div className="col-lg-6 number_article">
                       <img src={article.articleImageSrc} alt="Sticky Article" key={article.articleId} />   
@@ -361,7 +378,7 @@ class App extends Component {
                             {article.articleTitle} 
                            </div>
                          </h2>
-                         <div className="meta clearfix">{article.articlePublishDate}</div>
+                         <div className="meta clearfix">{article.articlePublishDate} By {article.createdBy}</div>
                          <div className="clear"></div>
                          <div className="margin-10b"></div>
                          
@@ -381,7 +398,7 @@ class App extends Component {
             {this.state.homeOrCategoey === 4 &&
               <div id="primary" className="col-lg-8">
                 <header className="entry-header clearfix" style={{backgroundColor:"#eee", marginBottom: "30px"}}>
-                  <h1 className="entry-single-title">{this.state.article_title}</h1>                              
+                  <h1 style={{display: "flex"}} className="entry-single-title"><div className="path">{this.state.category_title}/{this.state.article_title}</div><div className="title_center">{this.state.article_title}</div></h1>                              
                 </header>
                 {this.state.Article_paragraph.map(articleParagraph =>
                    <div className="Topic_topicListPen-3t_kg" key={articleParagraph.articleParagraphId}>
@@ -396,6 +413,41 @@ class App extends Component {
                       </div>
                     </div>
                 )}
+              </div>
+            }
+            {this.state.homeOrCategoey === 5 &&
+              <div id="primary" className="col-lg-8">
+                <aside id="ct_sticky_widget-2" className="widget ct_sticky_widget clearfix">
+                {this.state.Opened_articles.map(article =>
+                   <div className="sticky-block" key={article.articleId} style={{backgroundColor: randomColor(), cursor:'pointer'}} onClick={this.showSelectedArticleParagraph.bind(this,article.articleParagraphs, article.articleTitle )}>
+                   <div className="row">
+                     <div className="col-lg-6 number_article">
+                      <img src={article.articleImageSrc} alt="Sticky Article" key={article.articleId} />   
+                     </div>
+                     <div className="col-lg-6">
+                       <div className="right-side clearfix">
+                         <h2>
+                           <div title="Permalink to Sticky Article">
+                            {article.articleTitle} 
+                           </div>
+                         </h2>
+                         <div className="meta clearfix">{article.articlePublishDate} By {article.createdBy}</div>
+                         <div className="clear"></div>
+                         <div className="margin-10b"></div>
+                         <div>
+                            Category: {article.category.categoryTitle} 
+                           </div>
+                         <div className="clear"></div>
+                         <div className="btn-more-circle" title="Sticky Article">
+                           <i className="fa fa-chevron-right"></i>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+                  
+                )}
+                </aside>
               </div>
             }
             <div id="secondary" className="sidebar col-lg-4" role="complementary">
@@ -433,7 +485,9 @@ class App extends Component {
               <div className="row">				
                 <div className="col-lg-12">			
                      <div>NewTechIT</div>
+        
                 </div>
+     
               </div>
           </div>
         </div>
